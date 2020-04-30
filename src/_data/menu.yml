@@ -1,0 +1,47 @@
+index:
+  name: Home
+  icon: fe fe-home
+  url: index.html
+
+data:
+  name: Data
+  icon: fe fe-pie-chart
+  subpages:
+    virus:
+      name: Virus Data
+      icon: fe fe-crop
+      url: virus.html
+
+    response:
+      name: Response Data
+      icon: fe fe-package
+      url: response.html
+
+    movement:
+      name: Movement Data
+      icon: fe fe-map
+      url: movement.html
+
+docs:
+  name: Documentation
+  icon: fe fe-file-text
+  subpages:
+    sources:
+      name: Data Sources
+      icon: fe fe-user
+      url: sources.html
+
+    about:
+      name: About
+      icon: fe fe-user
+      url: about.html
+
+    web:
+     name: Web Tech
+     icon: fe fe-user
+     url: web.html
+
+    contact:
+      name: Contact
+      icon: fe fe-user
+      url: contact.html

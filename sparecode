@@ -1,0 +1,55 @@
+Papa.parse("https://cors-anywhere.herokuapp.com/https://coronavirus.data.gov.uk/downloads/csv/coronavirus-cases_latest.csv", {
+  download: true,
+  header: true,
+  dynamicTyping: true,
+  complete: function(PHECases) {
+  PHECasesDaily = PHECases['data'][0]['Daily lab-confirmed cases'];
+  document.getElementById("NewCases").innerHTML = PHECasesDaily;
+  PHECasesTotal = PHECases['data'][0]['Cumulative lab-confirmed cases'];
+  document.getElementById("TotalCases").innerHTML = PHECasesTotal;
+}
+
+
+for(var i = 0; i < json.length; i++) {
+    var obj = json[i];
+['overview'][54]['areaCode']
+    console.log(obj.id);
+}
+
+				Papa.parse("assets/data/ONSDeathsLatest.csv", {
+					download: true,
+					header: true,
+					dynamicTyping: true,
+					complete: function(PHEDeaths) {
+					PHEDeathsDaily = PHEDeaths['data'][0]['Daily hospital deaths'];
+					document.getElementById("NewDeaths").innerHTML = PHEDeathsDaily;
+					PHEDeathsTotal = PHEDeaths['data'][0]['Cumulative hospital deaths'];
+					document.getElementById("TotalDeaths").innerHTML = PHEDeathsTotal;
+				}
+				});
+
+ONSTotalDeaths +
+				document.getElementById("TotalDeaths").innerHTML = PHEDeathsDaily;
+
+
+        					data['overview'][i]['reportingDate'] > ) {
+
+        						for(var i = data.length - 1; i >= 0; i--) {
+        						var obj = data['overview'][i]['dailyHospitalDeaths'];
+        						Temp = Temp + parseInt(obj, 10);
+        						console.log(Temp);
+
+
+
+                    			$.getJSON('https://c19downloads.azureedge.net/downloads/json/coronavirus-deaths_latest.json', function(data) {
+                    				console.log(data);
+                    					for(var i = data.length - 1; i >= 0; i--) {
+                    					var obj = data['overview'][i]['dailyHospitalDeaths'];
+                    					Temp = Temp + parseInt(obj, 10);
+                    					console.log(Temp);
+                    				}
+                    				PHETotalDeaths = parseInt(Temp, 10);
+                    				return PHETotalDeaths;
+                    			});
+
+                    			console.log(PHETotalDeaths);
