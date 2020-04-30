@@ -13,18 +13,18 @@ menu: index
 		<div class="col-6 col-sm-4 col-lg-2">
 			<div class="card">
 				<div class="card-body p-3 text-center">
-					<div class="text-right text-green"> 6%
+					<div class="text-right text-green" id="DailyDeathsPercent"> 0%
 						<i class="fe fe-chevron-up"></i>
 					</div>
 					<div class="h1 m-0" id="NewDeaths">0</div>
-					<div class="text-muted mb-4">New Deaths (Hospital)</div>
+					<div class="text-muted mb-4">New Deaths (PHE)</div>
 				</div>
 			</div>
 		</div>
 		<div class="col-6 col-sm-4 col-lg-2">
 			<div class="card">
 				<div class="card-body p-3 text-center">
-					<div class="text-right text-green"> 6%
+					<div class="text-right text-green" id="NewCasesPercent"> 0%
 						<i class="fe fe-chevron-up"></i>
 					</div>
 					<div class="h1 m-0" id="NewCases">0</div>
@@ -35,7 +35,7 @@ menu: index
 		<div class="col-6 col-sm-4 col-lg-2">
 			<div class="card">
 				<div class="card-body p-3 text-center">
-					<div class="text-right text-green" id="TotalDeathsPercent"> 6%
+					<div class="text-right text-green" id="TotalDeathsPercent"> 0%
 						<i class="fe fe-chevron-up"></i>
 					</div>
 					<div class="h1 m-0" id="TotalDeaths">0</div>
@@ -46,7 +46,7 @@ menu: index
 		<div class="col-6 col-sm-4 col-lg-2">
 			<div class="card">
 				<div class="card-body p-3 text-center">
-					<div class="text-right text-green"> 6%
+					<div class="text-right text-green" id="TotalCasesPercent"> 0%
 						<i class="fe fe-chevron-up"></i>
 					</div>
 					<div class="h1 m-0" id="TotalCases">0</div>
@@ -129,6 +129,7 @@ menu: index
 			$.getJSON('https://c19downloads.azureedge.net/downloads/json/coronavirus-deaths_latest.json', function(data) {
 				var i = 0;
 				var TodayDeathsPHE = data['overview'][0]['dailyChangeInDeaths'];
+				var YesterdayDeathsPHE = data['overview'][1]['dailyChangeInDeaths'];
 				while (data['overview'][i]['reportingDate'] > ONSLatestDate) {
 					var obj = data['overview'][i]['dailyChangeInDeaths'];
 					Temp = Temp + parseInt(obj, 10);
@@ -137,13 +138,33 @@ menu: index
 				PHETotalDeaths = parseInt(Temp, 10);
 				var TotalDeaths = PHETotalDeaths + 23316;
 				var PreviousDeaths = TotalDeaths - TodayDeathsPHE;
-				var DeathsChangePercent = Math.trunc(((TotalDeaths-PreviousDeaths)/TotalDeaths)*100);
+				var DeathsChangePercent = ((TotalDeaths-PreviousDeaths)/TotalDeaths)*100;
+				var DeathsChangePercent = DeathsChangePercent.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+				var DailyDeathsPercent = ((TodayDeathsPHE-YesterdayDeathsPHE)/YesterdayDeathsPHE)*100;
+				var DailyDeathsPercent = DailyDeathsPercent.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
 				document.getElementById("TotalDeathsPercent").innerHTML = DeathsChangePercent + '%';
 				document.getElementById("TotalDeaths").innerHTML = TotalDeaths;
+				document.getElementById("DailyDeathsPercent").innerHTML = DailyDeathsPercent + '%';
+				document.getElementById("NewDeaths").innerHTML = TodayDeathsPHE;
 				return PHETotalDeaths;
 			});
 
-			console.log(PHETotalDeaths);
+			$.getJSON('https://c19downloads.azureedge.net/downloads/json/coronavirus-cases_latest.json', function(data) {
+				var i = 0;
+				var NewCasesPHE = data['dailyRecords']['dailyLabConfirmedCases'];
+				var YesterdayCasesPHE = 1000;
+				var TotalCasesPHE = data['dailyRecords']['totalLabConfirmedCases'];
+				var PreviousCases = TotalCasesPHE - NewCasesPHE;
+				var TotalCasesChangePercent = ((TotalCasesPHE-PreviousCases)/PreviousCases)*100;
+				var TotalCasesChangePercent = TotalCasesChangePercent.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+				var NewCasesPercent = ((NewCasesPHE-YesterdayCasesPHE)/YesterdayCasesPHE)*100;
+				var NewCasesPercent = NewCasesPercent.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+				document.getElementById("NewCasesPercent").innerHTML = NewCasesPercent + '%';
+				document.getElementById("NewCases").innerHTML = NewCasesPHE;
+				document.getElementById("TotalCasesPercent").innerHTML = TotalCasesChangePercent + '%';
+				document.getElementById("TotalCases").innerHTML = TotalCasesPHE;
+				return PHETotalDeaths;
+			});
 
 			require(['c3', 'jquery'], function(c3, $) {
 				$(document).ready(function(){
