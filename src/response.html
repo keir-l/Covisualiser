@@ -1,0 +1,357 @@
+---
+layout: default
+title: Virus Data
+menu: data
+---
+
+<div class="container">
+
+	{% include page-title.html title="Virus Data" %}
+
+	<div class="card{% if include.collapsed %} card-collapsed{% endif %}">
+		<div class="card-status bg-teal"></div>
+
+		<div class="card-header">
+			<h3 class="card-title">{{ include.title | default: 'Daily Deaths' }}</h3>
+
+			{% unless include.hide-options %}
+			<div class="card-options">
+				{% if include.show-form %}
+				<form action="">
+					<div class="input-group">
+						<input type="text" class="form-control form-control-sm" placeholder="Search something..." name="s">
+						<span class="input-group-btn ml-2">
+							<button class="btn btn-sm btn-default" type="submit">
+								<span class="fe fe-search"></span>
+							</button>
+						</span>
+					</div>
+				</form>
+				{% elsif include.show-buttons %}
+				<a class="btn btn-secondary btn-sm">Action 1</a>
+				<a class="btn btn-secondary btn-sm ml-2">Action 2</a>
+				{% elsif include.show-switch %}
+				<label class="custom-switch m-0">
+					<input type="checkbox" value="1" class="custom-switch-input" checked>
+					<span class="custom-switch-indicator"></span>
+				</label>
+				{% elsif include.options %}
+				{{ include.options }}
+				{% else %}
+				<a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+				{% if include.show-fullscreen %}
+				{% endif %}
+				{% endif %}
+			</div>
+			{% endunless %}
+		</div>
+		{% if include.alert %}
+		<div class="card-alert alert alert-{{ include.alert-type | default: 'success' }} mb-0">
+			{{ include.alert }}
+		</div>
+		{% endif %}
+		<div class="card-body">
+			<div id='dailyDeathsPlotTitle'></div>
+			<div id='dailyDeathsPlot'></div>
+		</div>
+		{% if include.show-footer %}
+		<div class="card-footer">
+			This is standard card footer
+		</div>
+		{% endif %}
+	</div>
+
+	<div class="card{% if include.collapsed %} card-collapsed{% endif %}">
+		<div class="card-status bg-purple"></div>
+
+		<div class="card-header">
+			<h3 class="card-title">{{ include.title | default: 'Total Deaths' }}</h3>
+
+			{% unless include.hide-options %}
+			<div class="card-options">
+				{% if include.show-form %}
+				<form action="">
+					<div class="input-group">
+						<input type="text" class="form-control form-control-sm" placeholder="Search something..." name="s">
+						<span class="input-group-btn ml-2">
+							<button class="btn btn-sm btn-default" type="submit">
+								<span class="fe fe-search"></span>
+							</button>
+						</span>
+					</div>
+				</form>
+				{% elsif include.show-buttons %}
+				<a class="btn btn-secondary btn-sm">Action 1</a>
+				<a class="btn btn-secondary btn-sm ml-2">Action 2</a>
+				{% elsif include.show-switch %}
+				<label class="custom-switch m-0">
+					<input type="checkbox" value="1" class="custom-switch-input" checked>
+					<span class="custom-switch-indicator"></span>
+				</label>
+				{% elsif include.options %}
+				{{ include.options }}
+				{% else %}
+				<a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+				{% if include.show-fullscreen %}
+				{% endif %}
+				{% endif %}
+			</div>
+			{% endunless %}
+		</div>
+		{% if include.alert %}
+		<div class="card-alert alert alert-{{ include.alert-type | default: 'success' }} mb-0">
+			{{ include.alert }}
+		</div>
+		{% endif %}
+		<div class="card-body">
+			<div id='totalDeathsPlotTitle'></div>
+			<div id='totalDeathsPlot'></div>
+		</div>
+		{% if include.show-footer %}
+		<div class="card-footer">
+			This is standard card footer
+		</div>
+		{% endif %}
+	</div>
+
+</div>
+
+<script>
+	var today = new Date();
+	var dd = String(today.getDate()).padStart(2, '0');
+	var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+	function getOrdinalNum(n) {
+		return n + (n > 0 ? ['th', 'st', 'nd', 'rd'][(n > 3 && n < 21) || n % 10 > 3 ? 0 : n % 10] : '');
+	}
+	Ordinal = getOrdinalNum(dd);
+	var weekdays = new Array(7);
+	weekdays[0] = "Sunday";
+	weekdays[1] = "Monday";
+	weekdays[2] = "Tuesday";
+	weekdays[3] = "Wednesday";
+	weekdays[4] = "Thursday";
+	weekdays[5] = "Friday";
+	weekdays[6] = "Saturday";
+	var dayName = weekdays[today.getDay()];
+	const monthName = today.toLocaleString('default', { month: 'long' });
+	today = dayName + " " + Ordinal + " of " + monthName;
+
+	document.getElementById("dailyDeathsPlotTitle").innerHTML = 'NHS/ONS COVID-19 Confirmed Deaths Increase by Day in England as of ' + today;
+	document.getElementById("totalDeathsPlotTitle").innerHTML = 'NHS/ONS COVID-19 Confirmed Deaths Total by Day in England as of ' + today;
+
+	var PHEdeathsArray = [];
+	var PHEdatesArray = [];
+	var averageNHSArray = [];
+
+	var actualNHSArrayResponse = [0,0,0,4,0,2,2,1,5,4,1,10,13,16,24,31,48,47,69,63,105,106,154,154,192,244,320,354,352,604,595,359,598,611,655,756,723,713,781,863,754,701,736,684,650,615,652,609,571,545,498,537,459,465,432,414,361,346,303,275,226,70];
+	var actualNHSDatesResponse = [
+	"2020-04-30T00:00:00.000Z",
+	"2020-04-29T00:00:00.000Z",
+	"2020-04-28T00:00:00.000Z",
+	"2020-04-27T00:00:00.000Z",
+	"2020-04-26T00:00:00.000Z",
+	"2020-04-25T00:00:00.000Z",
+	"2020-04-24T00:00:00.000Z",
+	"2020-04-23T00:00:00.000Z",
+	"2020-04-22T00:00:00.000Z",
+	"2020-04-21T00:00:00.000Z",
+	"2020-04-20T00:00:00.000Z",
+	"2020-04-19T00:00:00.000Z",
+	"2020-04-18T00:00:00.000Z",
+	"2020-04-17T00:00:00.000Z",
+	"2020-04-16T00:00:00.000Z",
+	"2020-04-15T00:00:00.000Z",
+	"2020-04-14T00:00:00.000Z",
+	"2020-04-13T00:00:00.000Z",
+	"2020-04-12T00:00:00.000Z",
+	"2020-04-11T00:00:00.000Z",
+	"2020-04-10T00:00:00.000Z",
+	"2020-04-09T00:00:00.000Z",
+	"2020-04-08T00:00:00.000Z",
+	"2020-04-07T00:00:00.000Z",
+	"2020-04-06T00:00:00.000Z",
+	"2020-04-05T00:00:00.000Z",
+	"2020-04-04T00:00:00.000Z",
+	"2020-04-03T00:00:00.000Z",
+	"2020-04-02T00:00:00.000Z",
+	"2020-04-01T00:00:00.000Z",
+	"2020-03-31T00:00:00.000Z",
+	"2020-03-30T00:00:00.000Z",
+	"2020-03-29T00:00:00.000Z",
+	"2020-03-28T00:00:00.000Z",
+	"2020-03-27T00:00:00.000Z",
+	"2020-03-26T00:00:00.000Z",
+	"2020-03-25T00:00:00.000Z",
+	"2020-03-24T00:00:00.000Z",
+	"2020-03-23T00:00:00.000Z",
+	"2020-03-22T00:00:00.000Z",
+	"2020-03-21T00:00:00.000Z",
+	"2020-03-20T00:00:00.000Z",
+	"2020-03-19T00:00:00.000Z",
+	"2020-03-18T00:00:00.000Z",
+	"2020-03-17T00:00:00.000Z",
+	"2020-03-16T00:00:00.000Z",
+	"2020-03-15T00:00:00.000Z",
+	"2020-03-14T00:00:00.000Z",
+	"2020-03-13T00:00:00.000Z",
+	"2020-03-12T00:00:00.000Z",
+	"2020-03-11T00:00:00.000Z",
+	"2020-03-10T00:00:00.000Z",
+	"2020-03-09T00:00:00.000Z",
+	"2020-03-08T00:00:00.000Z",
+	"2020-03-07T00:00:00.000Z",
+	"2020-03-06T00:00:00.000Z",
+	"2020-03-05T00:00:00.000Z",
+	"2020-03-04T00:00:00.000Z",
+	"2020-03-03T00:00:00.000Z",
+	"2020-03-02T00:00:00.000Z",
+	"2020-03-01T00:00:00.000Z"];
+
+	var inaccurateNHSArray = actualNHSArrayResponse.reverse();
+	inaccurateNHSArray = inaccurateNHSArray.slice(0,5);
+	inaccurateNHSArray = inaccurateNHSArray.reverse();
+
+	var inaccurateNHSDates = actualNHSDatesResponse;
+	console.log(inaccurateNHSDates);
+	inaccurateNHSDates = inaccurateNHSDates.slice(0,5);
+	console.log(inaccurateNHSDates);
+	inaccurateNHSDates = inaccurateNHSDates.reverse();
+	console.log(inaccurateNHSDates);
+
+	var actualNHSArray = actualNHSArrayResponse.reverse();
+	actualNHSArray = actualNHSArray.slice(0,-5);
+
+	actualNHSDatesResponse = actualNHSDatesResponse.reverse();
+	var actualNHSDates = actualNHSDatesResponse.slice(0,-5);
+
+	ONSDailyArray
+	ONSDailyDates
+	ONSDailyAverageDates
+
+	getPHEDeaths();
+	function getPHEDeaths(){
+		jQuery.getJSON('https://c19downloads.azureedge.net/downloads/json/coronavirus-deaths_latest.json', function(data) {
+			PHEData = data['countries'];
+			for (var i = 0; i < PHEData.length; i++){
+				var obj = PHEData;
+				if (obj[i]['areaName'] == 'England'){
+					PHEdeathsArray.push(obj[i]['dailyChangeInDeaths']);
+					var tempDate = new Date(obj[i]['reportingDate']);
+					PHEdatesArray.push(tempDate);
+					var avgsTemp = 0;
+					i1 = i-8; i2 = i-4; i4 = i+4; i5 = i+8;
+					if (i1 >= 0){
+						avgsTemp += obj[i1]['dailyChangeInDeaths']
+					}
+					if (i2 >= 0){
+						avgsTemp += obj[i2]['dailyChangeInDeaths']
+					}
+					if (i4 <= PHEData.length-1){
+						avgsTemp += obj[i4]['dailyChangeInDeaths']
+					}
+					if (i5 <= PHEData.length-1){
+						avgsTemp += obj[i5]['dailyChangeInDeaths']
+					}
+					avgsTemp += obj[i]['dailyChangeInDeaths']
+					avgsTemp = avgsTemp/5;
+					averageNHSArray.push(avgsTemp);
+				}
+			}plotGraph();
+		});
+	}
+
+	async function plotGraph() {
+
+			var NHSDailyReported = {
+				x: PHEdatesArray,
+				y: PHEdeathsArray,
+				mode: 'lines+markers',
+				type: 'scatter',
+				name: 'NHS Deaths as Reported Daily',
+				line: {
+					dash: 'dash',
+					width: 2,
+					color: 'red'
+				},
+				marker: { size: 18 }
+			};
+
+			var ONSDailyDeaths = {
+				x: ONSDailyArray,
+				y: ONSDailyDates,
+				type: 'bar',
+				name: 'ONS Deaths',
+				marker: {
+					color: 'rgb(180,215,167)'
+				}
+			};
+
+			var NHSDailyAverage = {
+				x: PHEdatesArray,
+				y: averageNHSArray,
+				mode: 'lines',
+				name: 'NHS Rolling Average',
+				connectgaps: true,
+				line: {
+					dash: 'solid',
+					width: 2,
+					color: 'blue'
+				}
+			};
+
+			var ONSDailyAverage = {
+				x: ONSDailyAverageArray,
+				y: ONSDailyAverageDates,
+				mode: 'lines',
+				name: 'ONS Rolling Average',
+				line: {
+					dash: 'solid',
+					width: 2,
+					color: 'green'
+				}
+			};
+
+			var NHSDailyActual = {
+				x: actualNHSDates,
+				y: actualNHSArray,
+				type: 'bar',
+				name: 'Accurate NHS Deaths',
+				marker: {
+					color: 'rgb(169,192,245)'
+				}
+			};
+
+			var NHSDailyInaccurate = {
+				x: inaccurateNHSDates,
+				y: inaccurateNHSArray,
+				type: 'bar',
+				name: 'NHS Deaths subject to Change',
+				marker: {
+					color: 'rgb(208,207,246)'
+				}
+			};
+
+			var layout = {
+				barmode: 'stack',
+				yaxis: {
+					title: "Number of Deaths"
+				},
+				xaxis: {
+					title: "Date"
+				},
+				legend: {
+					orientation: "h",
+					xanchor: "center",
+					y: -0.3
+				}
+			};
+
+			var data = [NHSDailyAverage, NHSDailyReported, NHSDailyActual, NHSDailyInaccurate];
+			Plotly.newPlot('dailyDeathsPlot', data, layout, {responsive: true, displaylogo: false});
+
+	}
+
+</script>
+
+</div>
+</div>
