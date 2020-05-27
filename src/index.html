@@ -24,9 +24,7 @@ menu: index
 		<div class="col-6 col-sm-4 col-lg-2">
 			<div class="card">
 				<div class="card-body p-3 text-center">
-					<div class="text-right text-green" id="NewCasesPercent"> 0%
-						<i class="fe fe-chevron-up"></i>
-					</div>
+
 					<div class="h1 m-0" id="NewCases">0</div>
 					<div class="text-muted mb-4">New Cases</div>
 				</div>
@@ -39,7 +37,7 @@ menu: index
 						<i class="fe fe-chevron-up"></i>
 					</div>
 					<div class="h1 m-0" id="TotalDeaths">0</div>
-					<div class="text-muted mb-4"> Deaths (ONS&PHE)</div>
+					<div class="text-muted mb-4"> Deaths</div>
 				</div>
 			</div>
 		</div>
@@ -56,12 +54,30 @@ menu: index
 		</div>
 
 	</div>
+
+	<div class="alert alert-success" role="alert">
+	  Total deaths is a sum of the more accurate data from the ONS, Statistics Sotland & NIRSA in addition to the more recent but less accurate DHSC daily totals. To find out more head to the Data page.
+	</div>
+
+	<div class="alert alert-info" role="alert">
+	  For a graph of all deaths in England head to the <a href="https://covisualiser.uk/virus.html">Virus Data Page</a>
+	</div>
+
+	<div class="alert alert-warning" role="alert">
+	  The death data above refers to all deaths of those with Covid-19 positive tests, registered with local authorities and confirmed by the ONS/PHE. This is not the same as those who have died directly as a result of Covid-19.
+<p>
+		The NHS refer to this as deaths "where COVID-19 or suspected COVID-19 was mentioned anywhere on the death certificate, including in combination with other health conditions", the ONS as "deaths involving coronavirus (COVID-19), based on any mention of COVID-19 on the death certificate".
+	</div>
+
 	<script>
 
 		var TotalDeaths = parseInt(0, 10);
 		var PHETotalDeaths = parseInt(0, 10);
 		var Temp = parseInt(0, 10);
-		var ONSLatestDate = "2020-04-17";
+		var ONSLatestDate = "2020-05-01";
+		var ONSLatestTotal = 36619;
+		var NILatestTotal = 494;
+		var ScotLatestTotal = 2795;
 
 		$.getJSON('https://c19downloads.azureedge.net/downloads/json/coronavirus-deaths_latest.json', function(data) {
 			var i = 0;
@@ -73,7 +89,7 @@ menu: index
 				i++;
 			}
 			PHETotalDeaths = parseInt(Temp, 10);
-			var TotalDeaths = PHETotalDeaths + 23316;
+			var TotalDeaths = PHETotalDeaths + ONSLatestTotal + NILatestTotal + ScotLatestTotal;
 			var PreviousDeaths = TotalDeaths - TodayDeathsPHE;
 			var DeathsChangePercent = ((TotalDeaths-PreviousDeaths)/TotalDeaths)*100;
 			var DeathsChangePercent = DeathsChangePercent.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
@@ -96,7 +112,7 @@ menu: index
 			var TotalCasesChangePercent = TotalCasesChangePercent.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
 			var NewCasesPercent = ((NewCasesPHE-YesterdayCasesPHE)/YesterdayCasesPHE)*100;
 			var NewCasesPercent = NewCasesPercent.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
-			document.getElementById("NewCasesPercent").innerHTML = NewCasesPercent + '%';
+
 			document.getElementById("NewCases").innerHTML = NewCasesPHE;
 			document.getElementById("TotalCasesPercent").innerHTML = TotalCasesChangePercent + '%';
 			document.getElementById("TotalCases").innerHTML = TotalCasesPHE;

@@ -9,13 +9,14 @@ This section sets out the various data sources used, and how they are interprete
 
 ### Virus Data
 
-- [ONS](https://nodejs.org/download/), for England, Wales and National Data.
+- [ONS](https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/deaths/datasets/weeklyprovisionalfiguresondeathsregisteredinenglandandwales), for England, Wales and National Data. This is rleased in .xlsx format.
 - [Statistics.gov.scot](https://statistics.gov.scot/home), for Scottish Data.
-- [PHE/DHSC](https://coronavirus.data.gov.uk/), for the most recent national, but less confident data.
+- [PHE/DHSC](https://coronavirus.data.gov.uk/), for the most recent national, but less confident data. This is released as a .json.
 - [PHE/DHSC](https://www.england.nhs.uk/statistics/statistical-work-areas/covid-19-daily-deaths/), for recent NHS England Data.
 - [HSCNI](https://www.publichealth.hscni.net/publications/covid-19-surveillance-reports), for NI Data.
 - [OurWorldInData](https://ourworldindata.org/coronavirus), for International & Historical comparisons on deaths, infections, recovery and testing.
- 
+- [Reddit User u/thomalexday](https://docs.google.com/spreadsheets/d/1VKwmOL6Mgeijbc_fX7tQizMKsqfPvsIUwQ7zprefp8o/edit#gid=0)
+
 ### Other Data
 
 - [Citymapper](https://citymapper.com/cmi/about), data showing public transport usage in large cities.
